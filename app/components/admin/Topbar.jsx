@@ -1,7 +1,8 @@
 "use client";
 
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { LogOut } from "lucide-react";
+import Cookies from "js-cookie";
 
 export default function Topbar() {
   const router = useRouter();
@@ -13,13 +14,13 @@ export default function Topbar() {
   };
 
   return (
-    <header className="bg-white shadow-md h-14 flex items-center justify-between px-4">
-      <div className="font-semibold">Bienvenue Admin</div>
+    <header className="h-14 bg-white shadow flex items-center justify-between px-6 sticky top-0 z-30">
+      <div className="font-semibold text-gray-700">👋 Bienvenue Admin</div>
       <button
         onClick={handleLogout}
-        className="px-4 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+        className="flex items-center gap-2 px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600 transition cursor-pointer"
       >
-        Déconnexion
+        <LogOut className="w-4 h-4" /> Déconnexion
       </button>
     </header>
   );
