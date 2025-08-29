@@ -1,11 +1,33 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutDashboard, Users, Settings, X } from "lucide-react";
+import Image from "next/image"; // ✅ pour afficher ton logo optimisé
+import {
+  LayoutDashboard,
+  Users,
+  Settings,
+  CalendarDays,
+  FileText,
+  ScrollText,
+  User,
+  Menu,
+  X,
+} from "lucide-react";
 import { useState } from "react";
+import { useAuthUser } from "@/hooks/useAuthUser";
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
+  const user = useAuthUser();
+
+  const links = [
+    { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/admin/convocations", label: "Convocations", icon: CalendarDays },
+    { href: "/admin/proces-verbaux", label: "Procès-verbaux", icon: FileText },
+    { href: "/admin/noteservices", label: "Notes de service", icon: ScrollText },
+    { href: "/admin/users", label: "Utilisateurs", icon: Users },
+    { href: "/admin/settings", label: "Paramètres", icon: Settings },
+  ];
 
   return (
     <>
@@ -14,10 +36,10 @@ export default function Sidebar() {
         onClick={() => setOpen(true)}
         className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-green-600 text-white rounded-md shadow-md"
       >
-        ☰
+        <Menu className="w-5 h-5" />
       </button>
 
-      {/* Overlay noir semi-transparent (mobile) */}
+      {/* Overlay mobile */}
       {open && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
@@ -33,7 +55,17 @@ export default function Sidebar() {
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-white/20">
-          <span className="text-2xl font-bold">Admin Panel</span>
+          {/* ✅ Logo + Texte */}
+          <div className="flex items-center gap-2">
+            <Image
+              src="/img.jpg"
+              alt="Logo SGF"
+              width={32}
+              height={32}
+              className="rounded-full"
+            />
+            <span className="text-xl font-bold">SGF Admin</span>
+          </div>
           <button
             className="lg:hidden p-2 hover:bg-white/20 rounded-md"
             onClick={() => setOpen(false)}
@@ -44,25 +76,32 @@ export default function Sidebar() {
 
         {/* Navigation */}
         <nav className="p-4 space-y-2">
-          <Link
-            href="/admin/dashboard"
-            className="flex items-center gap-3 p-2 rounded-md hover:bg-white/20 transition"
-          >
-            <LayoutDashboard className="w-5 h-5" /> Dashboard
-          </Link>
-          <Link
-            href="/admin/users"
-            className="flex items-center gap-3 p-2 rounded-md hover:bg-white/20 transition"
-          >
-            <Users className="w-5 h-5" /> Utilisateurs
-          </Link>
-          <Link
-            href="/admin/settings"
-            className="flex items-center gap-3 p-2 rounded-md hover:bg-white/20 transition"
-          >
-            <Settings className="w-5 h-5" /> Paramètres
-          </Link>
+          {links.map(({ href, label, icon: Icon }) => (
+            <Link
+              key={href}
+              href={href}
+              className="flex items-center gap-3 p-2 rounded-md hover:bg-white/20 transition"
+            >
+              <Icon className="w-5 h-5" />
+              {label}
+            </Link>
+          ))}
         </nav>
+
+        {/* Footer : User connecté */}
+        {user && (
+          <div className="absolute bottom-4 left-0 w-full px-4">
+            <div className="flex items-center gap-3 bg-white/10 p-3 rounded-lg">
+              <User className="w-6 h-6 text-white" />
+              <div>
+                <p className="text-sm font-medium">
+                  {user?.prenom} {user?.nom}
+                </p>
+                <p className="text-xs text-white/70">{user?.role}</p>
+              </div>
+            </div>
+          </div>
+        )}
       </aside>
     </>
   );
